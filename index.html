@@ -4,21 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MY GARAGE / 個人車輛保養紀錄</title>
-
-<!-- PWA / 加到主畫面設定 -->
-<meta name="theme-color" content="#0e0f10">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="車庫">
-<meta name="mobile-web-app-capable" content="yes">
-
-<!-- 圖示（SVG 內嵌，無需額外檔案） -->
-<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='96' fill='%23f5d547'/><text x='256' y='340' font-family='Arial Black,sans-serif' font-size='260' font-weight='900' text-anchor='middle' fill='%23000'>MG</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='96' fill='%23f5d547'/><text x='256' y='340' font-family='Arial Black,sans-serif' font-size='260' font-weight='900' text-anchor='middle' fill='%23000'>MG</text></svg>">
-
-<!-- Manifest（內嵌為 data URL，省去額外檔案） -->
-<link rel="manifest" href='data:application/manifest+json,{"name":"MY GARAGE","short_name":"車庫","start_url":"./","display":"standalone","background_color":"%230e0f10","theme_color":"%230e0f10","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 512 512%27><rect width=%27512%27 height=%27512%27 rx=%2796%27 fill=%27%23f5d547%27/><text x=%27256%27 y=%27340%27 font-family=%27Arial Black,sans-serif%27 font-size=%27260%27 font-weight=%27900%27 text-anchor=%27middle%27 fill=%27%23000%27>MG</text></svg>","sizes":"any","type":"image/svg+xml"}]}'>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -103,6 +88,28 @@
   .vehicle-stats { display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border); }
   .vehicle-stat .num { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--accent); line-height: 1; }
   .vehicle-stat .lab { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); letter-spacing: 1px; margin-top: 4px; }
+  /* 驗車資訊列 */
+  .inspection-row {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .insp-item { display: flex; flex-direction: column; gap: 3px; }
+  .insp-lab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .insp-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+  }
   .inspect-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
   .inspect-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--bg-card-2); border: 1px solid var(--border); border-radius: 4px; gap: 12px; }
   .inspect-name { font-size: 13px; color: var(--text); }
@@ -461,6 +468,8 @@
       <div class="field"><label class="label">購入日期</label><input type="date" class="input" id="vPurchaseDate"></div>
       <div class="field"><label class="label">購入里程 (KM)</label><input type="number" class="input mono" id="vInitMileage" placeholder="購入時里程"></div>
       <div class="field full"><label class="label">目前里程 (KM)</label><input type="number" class="input mono" id="vCurrentMileage" placeholder="目前最新里程（若有保養紀錄會自動更新）"></div>
+      <div class="field"><label class="label">最近驗車日</label><input type="date" class="input" id="vLastInspection"></div>
+      <div class="field"><label class="label">下次驗車日</label><input type="date" class="input" id="vNextInspection"></div>
       <div class="field full"><label class="label">備註</label><textarea class="textarea" id="vNotes" placeholder="顏色、特殊配備、保險到期日等..."></textarea></div>
     </div>
     <div class="actions">
@@ -621,9 +630,49 @@
     const cards = window.vehicles.map(v => {
       const rs = window.records.filter(r => r.vehicleId === v.id);
       const spent = rs.reduce((s, r) => s + r.total, 0);
-      const latest = rs.length
+      // 取「最新保養紀錄里程」與「車輛目前里程」較大者（車只會往前開）
+      const lastRecordMileage = rs.length
         ? rs.sort((a,b) => new Date(b.serviceDate) - new Date(a.serviceDate))[0].mileage
-        : (+v.currentMileage || +v.initMileage || 0);
+        : 0;
+      const currentMileage = +v.currentMileage || 0;
+      const initMileage = +v.initMileage || 0;
+      const latest = Math.max(lastRecordMileage, currentMileage, initMileage);
+
+      // 驗車資訊
+      // 找出該車最新一筆保養紀錄的「下次保養日期」
+      const sortedRs = rs.length ? [...rs].sort((a,b) => new Date(b.serviceDate) - new Date(a.serviceDate)) : [];
+      const nextMaintDate = sortedRs.length ? sortedRs[0].nextDate : '';
+
+      function buildDateHtml(dateStr) {
+        if (!dateStr) return '<span style="color: var(--text-muted);">--</span>';
+        const days = Math.floor((new Date(dateStr) - new Date()) / 86400000);
+        let color = 'var(--green)';
+        let dayText = `${days} 天後`;
+        if (days < 0) { color = 'var(--red)'; dayText = `逾期 ${Math.abs(days)} 天`; }
+        else if (days <= 30) color = 'var(--red)';
+        else if (days <= 60) color = 'var(--accent)';
+        return `<span style="color: ${color};">${dateStr}</span> <span style="color: var(--text-dim); font-size: 10px;">(${dayText})</span>`;
+      }
+
+      let inspectionRow = '';
+      if (v.lastInspection || v.nextInspection || nextMaintDate) {
+        inspectionRow = `
+          <div class="inspection-row">
+            <div class="insp-item">
+              <span class="insp-lab">最近驗車</span>
+              <span class="insp-val">${v.lastInspection || '<span style="color: var(--text-muted);">--</span>'}</span>
+            </div>
+            <div class="insp-item">
+              <span class="insp-lab">下次驗車</span>
+              <span class="insp-val">${buildDateHtml(v.nextInspection)}</span>
+            </div>
+            <div class="insp-item" style="grid-column: 1 / -1;">
+              <span class="insp-lab">下次保養</span>
+              <span class="insp-val">${buildDateHtml(nextMaintDate)}</span>
+            </div>
+          </div>`;
+      }
+
       return `
         <div class="vehicle-card ${v.type}" onclick="editVehicle('${v.id}')">
           ${v.photo ? `<img src="${v.photo}" class="vehicle-photo" alt="${v.nickname}">` : `<div class="vehicle-icon">${v.type === 'car' ? '🚗' : '🏍️'}</div>`}
@@ -635,6 +684,7 @@
             <div class="vehicle-stat"><div class="num" style="font-size: 16px;">${(+latest).toLocaleString()}</div><div class="lab">目前里程 KM</div></div>
             <div class="vehicle-stat"><div class="num" style="font-size: 14px;">${spent.toLocaleString()}</div><div class="lab">累計花費</div></div>
           </div>
+          ${inspectionRow}
         </div>`;
     }).join('');
     grid.innerHTML = cards + `<div class="add-vehicle-card" onclick="openVehicleModal()"><div class="add-icon">+</div><div>新增車輛</div></div>`;
@@ -648,7 +698,7 @@
     document.getElementById('vehicleModalTitle').textContent = '新增車輛';
     document.getElementById('deleteVehicleBtn').style.display = 'none';
     setVehicleType('car');
-    ['vNickname','vPlate','vBrand','vModel','vYear','vEngine','vPurchaseDate','vInitMileage','vCurrentMileage','vNotes'].forEach(id => document.getElementById(id).value = '');
+    ['vNickname','vPlate','vBrand','vModel','vYear','vEngine','vPurchaseDate','vInitMileage','vCurrentMileage','vLastInspection','vNextInspection','vNotes'].forEach(id => document.getElementById(id).value = '');
     updatePhotoPreview(null);
     document.getElementById('vehicleModal').classList.add('show');
   }
@@ -737,6 +787,8 @@
     document.getElementById('vPurchaseDate').value = v.purchaseDate || '';
     document.getElementById('vInitMileage').value = v.initMileage || '';
     document.getElementById('vCurrentMileage').value = v.currentMileage || '';
+    document.getElementById('vLastInspection').value = v.lastInspection || '';
+    document.getElementById('vNextInspection').value = v.nextInspection || '';
     document.getElementById('vNotes').value = v.notes || '';
     currentPhoto = v.photo || null;
     updatePhotoPreview(currentPhoto);
@@ -768,6 +820,8 @@
       purchaseDate: document.getElementById('vPurchaseDate').value,
       initMileage: document.getElementById('vInitMileage').value,
       currentMileage: document.getElementById('vCurrentMileage').value,
+      lastInspection: document.getElementById('vLastInspection').value,
+      nextInspection: document.getElementById('vNextInspection').value,
       notes: document.getElementById('vNotes').value,
       photo: currentPhoto || '',
       createdAt: existing ? existing.createdAt : new Date().toISOString()
@@ -993,7 +1047,9 @@
     const totalSpent = matched.reduce((s, r) => s + r.total, 0);
     const latest = matched[0];
     const oldest = matched[matched.length - 1];
-    const diff = latest.mileage - (oldest.mileage || +v.initMileage || 0);
+    // 顯示用：取最新紀錄里程與車輛目前里程較大者
+    const displayLatestMileage = Math.max(latest.mileage, +v.currentMileage || 0);
+    const diff = displayLatestMileage - (oldest.mileage || +v.initMileage || 0);
     const tm = { maintenance: '定期保養', repair: '維修', inspection: '驗車' };
     content.innerHTML = `
       <div class="card">
