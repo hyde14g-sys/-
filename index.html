@@ -444,7 +444,8 @@
       <div class="field"><label class="label">年式</label><input type="text" class="input mono" id="vYear" placeholder="2020"></div>
       <div class="field"><label class="label">排氣量 / 引擎</label><input type="text" class="input" id="vEngine" placeholder="1800cc / 125cc"></div>
       <div class="field"><label class="label">購入日期</label><input type="date" class="input" id="vPurchaseDate"></div>
-      <div class="field"><label class="label">購入里程 (KM)</label><input type="number" class="input mono" id="vInitMileage" placeholder="0"></div>
+      <div class="field"><label class="label">購入里程 (KM)</label><input type="number" class="input mono" id="vInitMileage" placeholder="購入時里程"></div>
+      <div class="field full"><label class="label">目前里程 (KM)</label><input type="number" class="input mono" id="vCurrentMileage" placeholder="目前最新里程（若有保養紀錄會自動更新）"></div>
       <div class="field full"><label class="label">備註</label><textarea class="textarea" id="vNotes" placeholder="顏色、特殊配備、保險到期日等..."></textarea></div>
     </div>
     <div class="actions">
@@ -605,7 +606,9 @@
     const cards = window.vehicles.map(v => {
       const rs = window.records.filter(r => r.vehicleId === v.id);
       const spent = rs.reduce((s, r) => s + r.total, 0);
-      const latest = rs.length ? rs.sort((a,b) => new Date(b.serviceDate) - new Date(a.serviceDate))[0].mileage : (v.initMileage || 0);
+      const latest = rs.length
+        ? rs.sort((a,b) => new Date(b.serviceDate) - new Date(a.serviceDate))[0].mileage
+        : (+v.currentMileage || +v.initMileage || 0);
       return `
         <div class="vehicle-card ${v.type}" onclick="editVehicle('${v.id}')">
           ${v.photo ? `<img src="${v.photo}" class="vehicle-photo" alt="${v.nickname}">` : `<div class="vehicle-icon">${v.type === 'car' ? '🚗' : '🏍️'}</div>`}
@@ -614,7 +617,7 @@
           <div class="vehicle-sub">${v.brand || ''} ${v.model || ''} ${v.year ? '· ' + v.year : ''}</div>
           <div class="vehicle-stats">
             <div class="vehicle-stat"><div class="num">${rs.length}</div><div class="lab">紀錄筆數</div></div>
-            <div class="vehicle-stat"><div class="num" style="font-size: 16px;">${(+latest).toLocaleString()}</div><div class="lab">里程 KM</div></div>
+            <div class="vehicle-stat"><div class="num" style="font-size: 16px;">${(+latest).toLocaleString()}</div><div class="lab">目前里程 KM</div></div>
             <div class="vehicle-stat"><div class="num" style="font-size: 14px;">${spent.toLocaleString()}</div><div class="lab">累計花費</div></div>
           </div>
         </div>`;
@@ -630,7 +633,7 @@
     document.getElementById('vehicleModalTitle').textContent = '新增車輛';
     document.getElementById('deleteVehicleBtn').style.display = 'none';
     setVehicleType('car');
-    ['vNickname','vPlate','vBrand','vModel','vYear','vEngine','vPurchaseDate','vInitMileage','vNotes'].forEach(id => document.getElementById(id).value = '');
+    ['vNickname','vPlate','vBrand','vModel','vYear','vEngine','vPurchaseDate','vInitMileage','vCurrentMileage','vNotes'].forEach(id => document.getElementById(id).value = '');
     updatePhotoPreview(null);
     document.getElementById('vehicleModal').classList.add('show');
   }
@@ -718,6 +721,7 @@
     document.getElementById('vEngine').value = v.engine || '';
     document.getElementById('vPurchaseDate').value = v.purchaseDate || '';
     document.getElementById('vInitMileage').value = v.initMileage || '';
+    document.getElementById('vCurrentMileage').value = v.currentMileage || '';
     document.getElementById('vNotes').value = v.notes || '';
     currentPhoto = v.photo || null;
     updatePhotoPreview(currentPhoto);
@@ -748,6 +752,7 @@
       engine: document.getElementById('vEngine').value,
       purchaseDate: document.getElementById('vPurchaseDate').value,
       initMileage: document.getElementById('vInitMileage').value,
+      currentMileage: document.getElementById('vCurrentMileage').value,
       notes: document.getElementById('vNotes').value,
       photo: currentPhoto || '',
       createdAt: existing ? existing.createdAt : new Date().toISOString()
