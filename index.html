@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MY GARAGE / 個人車輛保養紀錄</title>
+
+<!-- PWA / 加到主畫面設定 -->
+<meta name="theme-color" content="#0e0f10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="車庫">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- 圖示（SVG 內嵌，無需額外檔案） -->
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='96' fill='%23f5d547'/><text x='256' y='340' font-family='Arial Black,sans-serif' font-size='260' font-weight='900' text-anchor='middle' fill='%23000'>MG</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='96' fill='%23f5d547'/><text x='256' y='340' font-family='Arial Black,sans-serif' font-size='260' font-weight='900' text-anchor='middle' fill='%23000'>MG</text></svg>">
+
+<!-- Manifest（內嵌為 data URL，省去額外檔案） -->
+<link rel="manifest" href='data:application/manifest+json,{"name":"MY GARAGE","short_name":"車庫","start_url":"./","display":"standalone","background_color":"%230e0f10","theme_color":"%230e0f10","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 512 512%27><rect width=%27512%27 height=%27512%27 rx=%2796%27 fill=%27%23f5d547%27/><text x=%27256%27 y=%27340%27 font-family=%27Arial Black,sans-serif%27 font-size=%27260%27 font-weight=%27900%27 text-anchor=%27middle%27 fill=%27%23000%27>MG</text></svg>","sizes":"any","type":"image/svg+xml"}]}'>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
