@@ -165,6 +165,48 @@
   .add-vehicle-card { background: transparent; border: 2px dashed var(--border); border-radius: 6px; padding: 40px 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--text-dim); transition: all 0.2s; min-height: 200px; }
   .add-vehicle-card:hover { border-color: var(--accent); color: var(--accent); }
   .add-icon { font-size: 40px; line-height: 1; }
+  /* 照片上傳 */
+  .photo-uploader {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    max-height: 200px;
+    background: var(--bg-card-2);
+    border: 2px dashed var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  .photo-uploader:hover { border-color: var(--accent); }
+  .photo-uploader img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-placeholder {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: var(--text-dim);
+  }
+  .photo-remove {
+    position: absolute; top: 8px; right: 8px;
+    width: 28px; height: 28px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid var(--border-bright);
+    color: var(--text);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .photo-remove:hover { background: var(--red); border-color: var(--red); }
+  /* 車卡縮圖 */
+  .vehicle-photo {
+    width: calc(100% + 40px);
+    margin: -20px -20px 16px -20px;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+    background: var(--bg);
+  }
   @media (max-width: 768px) {
     .header-inner { padding: 14px 16px; }
     .main { padding: 20px 16px; }
@@ -382,6 +424,19 @@
       <button class="type-btn" data-vtype="motorcycle" onclick="setVehicleType('motorcycle')"><span class="icon">🏍️</span><span>機車</span></button>
     </div>
     <div class="form-grid cols-2">
+      <div class="field full">
+        <label class="label">車輛照片</label>
+        <div class="photo-uploader" onclick="document.getElementById('vPhotoInput').click()">
+          <img id="vPhotoPreview" style="display:none;" alt="車輛照片">
+          <div id="vPhotoPlaceholder" class="photo-placeholder">
+            <div style="font-size: 32px;">📷</div>
+            <div style="font-size: 12px; color: var(--text-dim); margin-top: 6px;">點擊選擇照片</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px; font-family: 'JetBrains Mono', monospace;">JPG / PNG / WEBP</div>
+          </div>
+          <button type="button" id="vPhotoRemove" onclick="event.stopPropagation(); removeVehiclePhoto()" style="display:none;" class="photo-remove">✕</button>
+        </div>
+        <input type="file" id="vPhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoSelect(event)">
+      </div>
       <div class="field"><label class="label">暱稱 <span class="req">*</span></label><input type="text" class="input" id="vNickname" placeholder="例：我的小白"></div>
       <div class="field"><label class="label">車牌號碼 <span class="req">*</span></label><input type="text" class="input mono" id="vPlate" placeholder="ABC-1234" style="text-transform: uppercase;"></div>
       <div class="field"><label class="label">廠牌</label><input type="text" class="input" id="vBrand" placeholder="TOYOTA / YAMAHA"></div>
@@ -553,7 +608,7 @@
       const latest = rs.length ? rs.sort((a,b) => new Date(b.serviceDate) - new Date(a.serviceDate))[0].mileage : (v.initMileage || 0);
       return `
         <div class="vehicle-card ${v.type}" onclick="editVehicle('${v.id}')">
-          <div class="vehicle-icon">${v.type === 'car' ? '🚗' : '🏍️'}</div>
+          ${v.photo ? `<img src="${v.photo}" class="vehicle-photo" alt="${v.nickname}">` : `<div class="vehicle-icon">${v.type === 'car' ? '🚗' : '🏍️'}</div>`}
           <div class="vehicle-plate">${v.plate}</div>
           <div class="vehicle-name">${v.nickname}</div>
           <div class="vehicle-sub">${v.brand || ''} ${v.model || ''} ${v.year ? '· ' + v.year : ''}</div>
@@ -567,13 +622,85 @@
     grid.innerHTML = cards + `<div class="add-vehicle-card" onclick="openVehicleModal()"><div class="add-icon">+</div><div>新增車輛</div></div>`;
   }
 
+  let currentPhoto = null; // 暫存當前編輯中的照片 base64
+
   function openVehicleModal() {
     editingVehicleId = null;
+    currentPhoto = null;
     document.getElementById('vehicleModalTitle').textContent = '新增車輛';
     document.getElementById('deleteVehicleBtn').style.display = 'none';
     setVehicleType('car');
     ['vNickname','vPlate','vBrand','vModel','vYear','vEngine','vPurchaseDate','vInitMileage','vNotes'].forEach(id => document.getElementById(id).value = '');
+    updatePhotoPreview(null);
     document.getElementById('vehicleModal').classList.add('show');
+  }
+
+  function updatePhotoPreview(photoData) {
+    const img = document.getElementById('vPhotoPreview');
+    const placeholder = document.getElementById('vPhotoPlaceholder');
+    const removeBtn = document.getElementById('vPhotoRemove');
+    if (photoData) {
+      img.src = photoData;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+      removeBtn.style.display = 'flex';
+    } else {
+      img.style.display = 'none';
+      placeholder.style.display = 'flex';
+      removeBtn.style.display = 'none';
+    }
+  }
+
+  function removeVehiclePhoto() {
+    currentPhoto = null;
+    updatePhotoPreview(null);
+    document.getElementById('vPhotoInput').value = '';
+  }
+
+  async function handlePhotoSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      const compressed = await compressImage(file, 800, 0.85);
+      currentPhoto = compressed;
+      updatePhotoPreview(compressed);
+      // 顯示壓縮後大小
+      const kb = Math.round(compressed.length * 0.75 / 1024);
+      showNotify(`✓ 照片已載入 (約 ${kb}KB)`);
+    } catch (e) {
+      console.error(e);
+      showNotify('照片處理失敗', true);
+    }
+  }
+
+  // 壓縮圖片：限制最大邊長 maxSize，輸出 JPEG base64
+  function compressImage(file, maxSize, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > height && width > maxSize) {
+            height = Math.round(height * maxSize / width);
+            width = maxSize;
+          } else if (height > maxSize) {
+            width = Math.round(width * maxSize / height);
+            height = maxSize;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
 
   function editVehicle(id) {
@@ -592,6 +719,8 @@
     document.getElementById('vPurchaseDate').value = v.purchaseDate || '';
     document.getElementById('vInitMileage').value = v.initMileage || '';
     document.getElementById('vNotes').value = v.notes || '';
+    currentPhoto = v.photo || null;
+    updatePhotoPreview(currentPhoto);
     document.getElementById('vehicleModal').classList.add('show');
   }
 
@@ -620,6 +749,7 @@
       purchaseDate: document.getElementById('vPurchaseDate').value,
       initMileage: document.getElementById('vInitMileage').value,
       notes: document.getElementById('vNotes').value,
+      photo: currentPhoto || '',
       createdAt: existing ? existing.createdAt : new Date().toISOString()
     };
     try {
