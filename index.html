@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MY GARAGE / 個人車輛保養紀錄</title>
+<title>MY GARAGE v1.2 / 個人車輛保養紀錄</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -109,6 +109,356 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     color: var(--text);
+  }
+
+  /* ========== 回顧頁 ========== */
+  .review-hero {
+    background: linear-gradient(135deg, rgba(245, 213, 71, 0.08), rgba(255, 77, 46, 0.06));
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    padding: 32px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .review-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 60%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(245, 213, 71, 0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .review-hero-inner {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .review-hero-photo {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--border-bright);
+    flex-shrink: 0;
+  }
+  .review-hero-photo-placeholder {
+    width: 180px;
+    height: 180px;
+    background: var(--bg-card-2);
+    border: 2px solid var(--border-bright);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    flex-shrink: 0;
+  }
+  .review-hero-text { flex: 1; min-width: 200px; }
+  .review-hero-plate {
+    background: #fff;
+    color: #000;
+    padding: 8px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    border-radius: 4px;
+    letter-spacing: 2px;
+    display: inline-block;
+    margin-bottom: 14px;
+  }
+  .review-hero-name {
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, var(--accent), #ffeb8c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .review-hero-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 18px;
+  }
+  .review-hero-tagline {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.6;
+    padding: 14px 18px;
+    background: rgba(0,0,0,0.25);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--accent);
+  }
+  .stat-card.alt::before { background: var(--accent-2); }
+  .stat-card.blue::before { background: var(--blue); }
+  .stat-card.green::before { background: var(--green); }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    line-height: 1;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+  .stat-value .unit {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-left: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .stat-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
+  /* 圖表卡 */
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .chart-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .chart-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .chart-title::before {
+    content: '';
+    width: 4px;
+    height: 16px;
+    background: var(--accent);
+  }
+  .chart-toggle {
+    display: flex;
+    gap: 4px;
+  }
+  .chart-toggle button {
+    padding: 4px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+  .chart-toggle button.active {
+    background: rgba(245, 213, 71, 0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* 長條圖 */
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 200px;
+    padding: 10px 0;
+    overflow-x: auto;
+  }
+  .bar-item {
+    flex: 1;
+    min-width: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .bar {
+    width: 100%;
+    background: linear-gradient(180deg, var(--accent), rgba(245, 213, 71, 0.4));
+    border-radius: 3px 3px 0 0;
+    position: relative;
+    min-height: 2px;
+    transition: opacity 0.2s;
+    cursor: pointer;
+  }
+  .bar:hover { opacity: 0.8; }
+  .bar-val {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .bar-item:hover .bar-val { opacity: 1; }
+  .bar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+  }
+
+  /* 比例環 / 圓形圖 */
+  .ratio-section {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 30px;
+    align-items: center;
+  }
+  .donut-wrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+  }
+  .donut-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .donut-center .total {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    line-height: 1;
+  }
+  .donut-center .total-lab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+  .ratio-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .legend-text { flex: 1; }
+  .legend-name {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .legend-stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  .legend-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--accent);
+  }
+
+  /* TOP 排行 */
+  .top-list { display: flex; flex-direction: column; gap: 10px; }
+  .top-item {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--bg-card-2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    transition: all 0.2s;
+  }
+  .top-item:hover { border-color: var(--border-bright); }
+  .top-rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1;
+  }
+  .top-item:nth-child(1) .top-rank { color: var(--accent); }
+  .top-item:nth-child(2) .top-rank { color: #c0c0c0; }
+  .top-item:nth-child(3) .top-rank { color: #cd7f32; }
+  .top-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .top-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .top-amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 700;
+    text-align: right;
+  }
+
+  @media (max-width: 640px) {
+    .ratio-section { grid-template-columns: 1fr; }
+    .donut-wrapper { margin: 0 auto; }
+    .review-hero { padding: 20px; }
+    .review-hero-photo, .review-hero-photo-placeholder { width: 140px; height: 140px; }
+    .review-hero-name { font-size: 24px; }
+    .stat-value { font-size: 30px; }
   }
   .inspect-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
   .inspect-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--bg-card-2); border: 1px solid var(--border); border-radius: 4px; gap: 12px; }
@@ -265,6 +615,7 @@
   <button class="tab" data-page="list"><span class="tab-num">03</span>紀錄查詢</button>
   <button class="tab" data-page="history"><span class="tab-num">04</span>車輛歷史</button>
   <button class="tab" data-page="reminder"><span class="tab-num">05</span>保養提醒</button>
+  <button class="tab" data-page="review"><span class="tab-num">06</span>回顧</button>
 </nav>
 
 <main class="main">
@@ -433,6 +784,26 @@
     <div id="reminderList"></div>
   </section>
 
+  <!-- ========== 06 回顧 ========== -->
+  <section class="page" id="page-review">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">REVIEW</h1>
+        <div class="page-title-zh">回 顧</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <select class="select" id="reviewVehicleSelect" onchange="renderReview()" style="flex: 1;">
+        <option value="">-- 選擇車輛開始回顧 --</option>
+      </select>
+    </div>
+
+    <div id="reviewContent">
+      <div class="empty">⌖ 選擇一輛車，看看它陪你走過的旅程</div>
+    </div>
+  </section>
+
 </main>
 
 <div class="modal-bg" id="vehicleModal">
@@ -470,6 +841,7 @@
       <div class="field full"><label class="label">目前里程 (KM)</label><input type="number" class="input mono" id="vCurrentMileage" placeholder="目前最新里程（若有保養紀錄會自動更新）"></div>
       <div class="field"><label class="label">最近驗車日</label><input type="date" class="input" id="vLastInspection"></div>
       <div class="field"><label class="label">下次驗車日</label><input type="date" class="input" id="vNextInspection"></div>
+      <div class="field full"><label class="label">預計保養日（新增保養紀錄後自動改用紀錄的下次保養日）</label><input type="date" class="input" id="vPlannedMaint"></div>
       <div class="field full"><label class="label">備註</label><textarea class="textarea" id="vNotes" placeholder="顏色、特殊配備、保險到期日等..."></textarea></div>
     </div>
     <div class="actions">
@@ -495,7 +867,6 @@
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, query, orderBy, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // 沿用 gogostar2 專案（與訂單表共用同一個 Firebase）
@@ -510,47 +881,6 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-
-  // ── Google 登入（只允許家人帳號）──────────────────────────────
-  const ALLOWED_EMAILS = ['hyde14g@gmail.com', 'twotwo5410@gmail.com'];
-  const auth = getAuth(app);
-  await new Promise(resolve => {
-    let done = false;
-    const ov = document.createElement('div');
-    ov.id = 'authGate';
-    ov.style.cssText = 'position:fixed;inset:0;z-index:999999;background:#0f0f13;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;font-family:"Noto Sans TC",sans-serif;color:#e8e8f0;text-align:center';
-    ov.innerHTML = '<div style="font-size:1.4rem;font-weight:900;color:#f5c542">🔒 請先登入</div>'
-      + '<div id="authMsg" style="font-size:0.9rem;color:#7070a0">只限授權的 Google 帳號使用</div>'
-      + '<button id="authBtn" style="padding:12px 28px;border-radius:10px;border:none;background:#f5c542;color:#111;font-size:1rem;font-weight:700;cursor:pointer">使用 Google 登入</button>';
-    document.body.appendChild(ov);
-    const msg = ov.querySelector('#authMsg');
-    ov.querySelector('#authBtn').onclick = async () => {
-      const provider = new GoogleAuthProvider();
-      provider.setCustomParameters({ prompt: 'select_account' });
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (e) {
-        if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')) {
-          await signInWithRedirect(auth, provider);
-        } else if (!(e && e.code === 'auth/popup-closed-by-user')) {
-          msg.textContent = '登入失敗：' + (e && e.message ? e.message : e);
-        }
-      }
-    };
-    onAuthStateChanged(auth, user => {
-      if (done) return;
-      if (user && ALLOWED_EMAILS.includes((user.email || '').toLowerCase())) {
-        done = true;
-        ov.remove();
-        resolve();
-      } else if (user) {
-        msg.textContent = '⚠️ ' + user.email + ' 沒有使用權限，請換帳號登入';
-        msg.style.color = '#fb7185';
-        signOut(auth);
-      }
-    });
-  });
-
 
   // 即時同步車輛
   const vehiclesQ = query(collection(db, "garage_vehicles"), orderBy("createdAt", "asc"));
@@ -625,6 +955,7 @@
     if (page === 'list') renderRecordList();
     if (page === 'reminder') renderReminders();
     if (page === 'history') searchHistory();
+    if (page === 'review') renderReview();
     updateRecordNo();
     updateDbStatus();
   };
@@ -659,11 +990,26 @@
         if (t.dataset.page === 'list') renderRecordList();
         if (t.dataset.page === 'reminder') renderReminders();
         if (t.dataset.page === 'vehicles') renderVehicles();
+        if (t.dataset.page === 'review') renderReview();
       });
     });
     document.getElementById('searchInput').addEventListener('input', renderRecordList);
     document.getElementById('filterType').addEventListener('change', renderRecordList);
     document.getElementById('filterVehicle').addEventListener('change', renderRecordList);
+  }
+
+  // v1.2：下次保養 ＝ 預計保養日（設定後還沒有新紀錄時）或最新紀錄的下次保養日
+  function getNextMaintTodayYmd() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function effectiveNextMaint(v) {
+    const latest = (window.records || []).filter(r => r.vehicleId === v.id)
+      .sort((a, b) => (b.serviceDate || '').localeCompare(a.serviceDate || ''))[0] || null;
+    const planOk = !!v.plannedMaintDate && !(latest && v.plannedMaintSetAt && (latest.serviceDate || '') >= v.plannedMaintSetAt);
+    if (planOk) return { date: v.plannedMaintDate, mileage: '', planned: true };
+    if (latest && (latest.nextDate || latest.nextMileage)) return { date: latest.nextDate || '', mileage: latest.nextMileage || '', planned: false };
+    return null;
   }
 
   function renderVehicles() {
@@ -683,7 +1029,8 @@
       // 驗車資訊
       // 找出該車最新一筆保養紀錄的「下次保養日期」
       const sortedRs = rs.length ? [...rs].sort((a,b) => new Date(b.serviceDate) - new Date(a.serviceDate)) : [];
-      const nextMaintDate = sortedRs.length ? sortedRs[0].nextDate : '';
+      const effMaint = effectiveNextMaint(v);
+      const nextMaintDate = effMaint ? effMaint.date : '';
 
       function buildDateHtml(dateStr) {
         if (!dateStr) return '<span style="color: var(--text-muted);">--</span>';
@@ -709,7 +1056,7 @@
               <span class="insp-val">${buildDateHtml(v.nextInspection)}</span>
             </div>
             <div class="insp-item" style="grid-column: 1 / -1;">
-              <span class="insp-lab">下次保養</span>
+              <span class="insp-lab">${effMaint && effMaint.planned ? '預計保養' : '下次保養'}</span>
               <span class="insp-val">${buildDateHtml(nextMaintDate)}</span>
             </div>
           </div>`;
@@ -740,7 +1087,7 @@
     document.getElementById('vehicleModalTitle').textContent = '新增車輛';
     document.getElementById('deleteVehicleBtn').style.display = 'none';
     setVehicleType('car');
-    ['vNickname','vPlate','vBrand','vModel','vYear','vEngine','vPurchaseDate','vInitMileage','vCurrentMileage','vLastInspection','vNextInspection','vNotes'].forEach(id => document.getElementById(id).value = '');
+    ['vNickname','vPlate','vBrand','vModel','vYear','vEngine','vPurchaseDate','vInitMileage','vCurrentMileage','vLastInspection','vNextInspection','vPlannedMaint','vNotes'].forEach(id => document.getElementById(id).value = '');
     updatePhotoPreview(null);
     document.getElementById('vehicleModal').classList.add('show');
   }
@@ -831,6 +1178,7 @@
     document.getElementById('vCurrentMileage').value = v.currentMileage || '';
     document.getElementById('vLastInspection').value = v.lastInspection || '';
     document.getElementById('vNextInspection').value = v.nextInspection || '';
+    document.getElementById('vPlannedMaint').value = v.plannedMaintDate || '';
     document.getElementById('vNotes').value = v.notes || '';
     currentPhoto = v.photo || null;
     updatePhotoPreview(currentPhoto);
@@ -864,6 +1212,11 @@
       currentMileage: document.getElementById('vCurrentMileage').value,
       lastInspection: document.getElementById('vLastInspection').value,
       nextInspection: document.getElementById('vNextInspection').value,
+      plannedMaintDate: document.getElementById('vPlannedMaint').value,
+      // 預計保養日有改才更新設定日（用來判斷之後有沒有新的保養紀錄）
+      plannedMaintSetAt: !document.getElementById('vPlannedMaint').value ? ''
+        : (existing && existing.plannedMaintDate === document.getElementById('vPlannedMaint').value && existing.plannedMaintSetAt)
+          ? existing.plannedMaintSetAt : getNextMaintTodayYmd(),
       notes: document.getElementById('vNotes').value,
       photo: currentPhoto || '',
       createdAt: existing ? existing.createdAt : new Date().toISOString()
@@ -907,6 +1260,13 @@
     document.getElementById('filterVehicle').innerHTML =
       '<option value="all">全部車輛</option>' + window.vehicles.map(v =>
         `<option value="${v.id}">${v.nickname} (${v.plate})</option>`).join('');
+    const reviewSel = document.getElementById('reviewVehicleSelect');
+    if (reviewSel) {
+      const cur = reviewSel.value;
+      reviewSel.innerHTML = '<option value="">-- 選擇車輛開始回顧 --</option>' + window.vehicles.map(v =>
+        `<option value="${v.id}">${v.type === 'car' ? '🚗' : '🏍️'} ${v.nickname} (${v.plate})</option>`).join('');
+      if (cur) reviewSel.value = cur;
+    }
   }
 
   function onVehicleChange() {
@@ -1134,15 +1494,14 @@
 
   function renderReminders() {
     const list = document.getElementById('reminderList');
-    const latestByV = {};
-    window.records.forEach(r => {
-      if (!latestByV[r.vehicleId] || new Date(r.serviceDate) > new Date(latestByV[r.vehicleId].serviceDate)) latestByV[r.vehicleId] = r;
-    });
-    const reminders = Object.values(latestByV).filter(r => r.nextDate).map(r => {
-      const days = Math.floor((new Date(r.nextDate) - new Date()) / 86400000);
-      return { ...r, daysLeft: days };
-    }).sort((a, b) => a.daysLeft - b.daysLeft);
-    if (reminders.length === 0) { list.innerHTML = '<div class="empty">⊘ 暫無保養提醒（新增紀錄時填寫「下次保養日期」即會出現）</div>'; return; }
+    const reminders = (window.vehicles || []).map(v => {
+      const e = effectiveNextMaint(v);
+      if (!e || !e.date) return null;
+      const days = Math.floor((new Date(e.date) - new Date()) / 86400000);
+      return { nextDate: e.date, nextMileage: e.mileage, planned: e.planned, daysLeft: days,
+               vehicleSnapshot: { type: v.type, plate: v.plate, nickname: v.nickname, brand: v.brand, model: v.model } };
+    }).filter(Boolean).sort((a, b) => a.daysLeft - b.daysLeft);
+    if (reminders.length === 0) { list.innerHTML = '<div class="empty">⊘ 暫無保養提醒（在車輛資料填「預計保養日」，或新增紀錄時填「下次保養日期」即會出現）</div>'; return; }
     list.innerHTML = reminders.map(r => {
       let cls = 'ok', label = '正常';
       if (r.daysLeft < 0) { cls = 'urgent'; label = '已逾期'; }
@@ -1155,7 +1514,7 @@
             <div class="plate">${r.vehicleSnapshot.plate}</div>
             <div>
               <div class="title">${r.vehicleSnapshot.nickname} · ${r.vehicleSnapshot.brand || ''} ${r.vehicleSnapshot.model || ''}</div>
-              <div class="sub">📅 下次保養 ${r.nextDate}${r.nextMileage ? ' · ⊙ ' + (+r.nextMileage).toLocaleString() + ' KM' : ''} · ${label}</div>
+              <div class="sub">📅 ${r.planned ? '預計保養' : '下次保養'} ${r.nextDate}${r.nextMileage ? ' · ⊙ ' + (+r.nextMileage).toLocaleString() + ' KM' : ''} · ${label}</div>
             </div>
           </div>
           <div>
@@ -1165,6 +1524,292 @@
         </div>`;
     }).join('');
   }
+
+  // ============ 回顧頁 ============
+  let reviewChartMode = 'month'; // 'month' or 'year'
+
+  function setReviewChartMode(mode) {
+    reviewChartMode = mode;
+    renderReview();
+  }
+
+  function renderReview() {
+    const vId = document.getElementById('reviewVehicleSelect').value;
+    const content = document.getElementById('reviewContent');
+    if (!vId) {
+      content.innerHTML = '<div class="empty">⌖ 選擇一輛車，看看它陪你走過的旅程</div>';
+      return;
+    }
+    const v = window.vehicles.find(x => x.id === vId);
+    if (!v) return;
+    const rs = window.records.filter(r => r.vehicleId === vId)
+      .sort((a, b) => new Date(a.serviceDate) - new Date(b.serviceDate));
+
+    // 計算各項統計
+    const totalSpent = rs.reduce((s, r) => s + r.total, 0);
+    const recordCount = rs.length;
+
+    // 行駛公里：最新里程 - 購入里程
+    const lastRecordMileage = rs.length ? rs[rs.length - 1].mileage : 0;
+    const currentMileage = Math.max(+v.currentMileage || 0, lastRecordMileage);
+    const initMileage = +v.initMileage || 0;
+    const driven = Math.max(0, currentMileage - initMileage);
+
+    // 跟了幾年幾月
+    const ownedSince = v.purchaseDate || (rs[0] && rs[0].serviceDate) || v.createdAt;
+    const yearsMonths = calcYearsMonths(ownedSince);
+
+    // 平均每月花費
+    const totalMonths = Math.max(1, yearsMonths.totalMonths);
+    const avgMonthly = Math.round(totalSpent / totalMonths);
+
+    // 類型統計
+    const typeStats = { maintenance: 0, repair: 0, inspection: 0 };
+    rs.forEach(r => { typeStats[r.serviceType] = (typeStats[r.serviceType] || 0) + r.total; });
+
+    // 月份 / 年份花費趨勢
+    const trend = aggregateTrend(rs, reviewChartMode);
+
+    // 零件 TOP 5（最貴）
+    const partStats = {};
+    rs.forEach(r => {
+      (r.parts || []).forEach(p => {
+        if (!p.name) return;
+        if (!partStats[p.name]) partStats[p.name] = { name: p.name, total: 0, count: 0, lastDate: '' };
+        partStats[p.name].total += p.subtotal;
+        partStats[p.name].count += 1;
+        if (!partStats[p.name].lastDate || r.serviceDate > partStats[p.name].lastDate) {
+          partStats[p.name].lastDate = r.serviceDate;
+        }
+      });
+    });
+    const topExpensive = Object.values(partStats).sort((a, b) => b.total - a.total).slice(0, 5);
+    const topFrequent = Object.values(partStats).sort((a, b) => b.count - a.count).slice(0, 5);
+
+    // 產生 tagline（成就感文案）
+    const tagline = buildTagline(v, rs, yearsMonths, driven, totalSpent);
+
+    content.innerHTML = `
+      <!-- HERO -->
+      <div class="review-hero">
+        <div class="review-hero-inner">
+          ${v.photo
+            ? `<img src="${v.photo}" class="review-hero-photo" alt="${v.nickname}">`
+            : `<div class="review-hero-photo-placeholder">${v.type === 'car' ? '🚗' : '🏍️'}</div>`}
+          <div class="review-hero-text">
+            <div class="review-hero-plate">${v.plate}</div>
+            <div class="review-hero-name">${v.nickname}</div>
+            <div class="review-hero-sub">${v.brand || ''} ${v.model || ''} ${v.year ? '· ' + v.year : ''} ${v.engine ? '· ' + v.engine : ''}</div>
+            <div class="review-hero-tagline">${tagline}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 核心數字 -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">累計花費</div>
+          <div class="stat-value">${totalSpent.toLocaleString()}<span class="unit">NT$</span></div>
+          <div class="stat-sub">平均每月 NT$ ${avgMonthly.toLocaleString()}</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">進廠次數</div>
+          <div class="stat-value">${recordCount}<span class="unit">次</span></div>
+          <div class="stat-sub">${recordCount > 0 ? '最近 ' + rs[rs.length-1].serviceDate : '尚無紀錄'}</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">總行駛公里</div>
+          <div class="stat-value">${driven.toLocaleString()}<span class="unit">KM</span></div>
+          <div class="stat-sub">目前里程 ${currentMileage.toLocaleString()}</div>
+        </div>
+        <div class="stat-card alt">
+          <div class="stat-label">相伴時光</div>
+          <div class="stat-value">${yearsMonths.text}</div>
+          <div class="stat-sub">${ownedSince ? '自 ' + ownedSince.substring(0, 10) + ' 起' : ''}</div>
+        </div>
+      </div>
+
+      ${recordCount === 0 ? `<div class="empty">⊘ 還沒有保養紀錄，新增第一筆後就能看到更多回顧</div>` : `
+
+      <!-- 花費趨勢 -->
+      <div class="chart-card">
+        <div class="chart-title-row">
+          <div class="chart-title">花費趨勢</div>
+          <div class="chart-toggle">
+            <button class="${reviewChartMode === 'month' ? 'active' : ''}" onclick="setReviewChartMode('month')">月份</button>
+            <button class="${reviewChartMode === 'year' ? 'active' : ''}" onclick="setReviewChartMode('year')">年份</button>
+          </div>
+        </div>
+        ${renderBarChart(trend)}
+      </div>
+
+      <!-- 項目比例 -->
+      <div class="chart-card">
+        <div class="chart-title-row">
+          <div class="chart-title">項目比例</div>
+        </div>
+        ${renderRatio(typeStats, totalSpent)}
+      </div>
+
+      ${topExpensive.length ? `
+      <!-- 最貴 TOP 5 -->
+      <div class="chart-card">
+        <div class="chart-title-row">
+          <div class="chart-title">花最多錢的零件 TOP 5</div>
+        </div>
+        <div class="top-list">
+          ${topExpensive.map((p, i) => `
+            <div class="top-item">
+              <div class="top-rank">${i + 1}</div>
+              <div>
+                <div class="top-name">${p.name}</div>
+                <div class="top-meta">共更換 ${p.count} 次 · 最近 ${p.lastDate}</div>
+              </div>
+              <div class="top-amount">NT$ ${p.total.toLocaleString()}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      ` : ''}
+
+      ${topFrequent.length && topFrequent[0].count > 1 ? `
+      <!-- 最常換 TOP 5 -->
+      <div class="chart-card">
+        <div class="chart-title-row">
+          <div class="chart-title">最常更換的零件 TOP 5</div>
+        </div>
+        <div class="top-list">
+          ${topFrequent.map((p, i) => `
+            <div class="top-item">
+              <div class="top-rank">${i + 1}</div>
+              <div>
+                <div class="top-name">${p.name}</div>
+                <div class="top-meta">累計 NT$ ${p.total.toLocaleString()} · 最近 ${p.lastDate}</div>
+              </div>
+              <div class="top-amount">${p.count} 次</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      ` : ''}
+
+      `}
+    `;
+  }
+
+  function calcYearsMonths(dateStr) {
+    if (!dateStr) return { text: '—', totalMonths: 0 };
+    const start = new Date(dateStr);
+    const now = new Date();
+    let months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+    if (now.getDate() < start.getDate()) months--;
+    months = Math.max(0, months);
+    const y = Math.floor(months / 12);
+    const m = months % 12;
+    let text = '';
+    if (y > 0) text += y + ' 年';
+    if (m > 0) text += (y > 0 ? ' ' : '') + m + ' 月';
+    if (!text) text = '< 1 月';
+    return { text, totalMonths: months };
+  }
+
+  function aggregateTrend(rs, mode) {
+    const map = {};
+    rs.forEach(r => {
+      if (!r.serviceDate) return;
+      const key = mode === 'year' ? r.serviceDate.substring(0, 4) : r.serviceDate.substring(0, 7);
+      map[key] = (map[key] || 0) + r.total;
+    });
+    const sorted = Object.keys(map).sort().map(k => ({ key: k, value: map[k] }));
+    return sorted;
+  }
+
+  function renderBarChart(data) {
+    if (!data.length) return '<div class="empty">無資料</div>';
+    const max = Math.max(...data.map(d => d.value));
+    return `
+      <div class="bar-chart">
+        ${data.map(d => {
+          const h = (d.value / max * 180);
+          const label = d.key.length === 7 ? d.key.substring(5) + '月' : d.key;
+          return `
+            <div class="bar-item" title="${d.key}: NT$ ${d.value.toLocaleString()}">
+              <div class="bar" style="height: ${h}px;">
+                <span class="bar-val">${d.value.toLocaleString()}</span>
+              </div>
+              <div class="bar-label">${label}</div>
+            </div>`;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  function renderRatio(stats, total) {
+    if (total === 0) return '<div class="empty">無資料</div>';
+    const items = [
+      { key: 'maintenance', name: '定期保養', val: stats.maintenance || 0, color: '#60a5fa' },
+      { key: 'repair', name: '維修', val: stats.repair || 0, color: '#ef4444' },
+      { key: 'inspection', name: '驗車', val: stats.inspection || 0, color: '#f5d547' }
+    ].filter(i => i.val > 0);
+
+    // 用 conic-gradient 畫 donut
+    let cum = 0;
+    const stops = items.map(i => {
+      const pct = i.val / total * 100;
+      const start = cum;
+      cum += pct;
+      return `${i.color} ${start}% ${cum}%`;
+    }).join(', ');
+
+    return `
+      <div class="ratio-section">
+        <div class="donut-wrapper" style="background: conic-gradient(${stops}); border-radius: 50%;">
+          <div style="position:absolute; inset: 28px; background: var(--bg-card); border-radius: 50%;"></div>
+          <div class="donut-center">
+            <div class="total">${(total/1000).toFixed(1)}K</div>
+            <div class="total-lab">NT$</div>
+          </div>
+        </div>
+        <div class="ratio-legend">
+          ${items.map(i => `
+            <div class="legend-item">
+              <div class="legend-dot" style="background: ${i.color};"></div>
+              <div class="legend-text">
+                <div class="legend-name">${i.name}</div>
+                <div class="legend-stat">${(i.val/total*100).toFixed(1)}% · NT$ ${i.val.toLocaleString()}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function buildTagline(v, rs, ym, driven, spent) {
+    const name = v.nickname || '這台車';
+    const lines = [];
+
+    if (ym.totalMonths === 0) {
+      lines.push(`${name} 才剛加入車庫，故事正要開始。`);
+    } else if (ym.totalMonths < 12) {
+      lines.push(`${name} 跟了你 ${ym.text}，已經一起跑了 ${driven.toLocaleString()} 公里。`);
+    } else {
+      const years = Math.floor(ym.totalMonths / 12);
+      lines.push(`${name} 跟了你 <b style="color: var(--accent);">${ym.text}</b>，陪你走過 <b style="color: var(--accent);">${driven.toLocaleString()}</b> 公里。`);
+      if (years >= 3) lines.push(`這不是短期關係 — 你是用心養著這台車的人。`);
+    }
+
+    if (rs.length === 0) {
+      lines.push('還沒有保養紀錄。記得照顧它，它會回報你。');
+    } else if (rs.length >= 10) {
+      lines.push(`累計 ${rs.length} 次進廠、共投入 NT$ ${spent.toLocaleString()} —— 這份心意，車子都知道。`);
+    } else if (spent > 0) {
+      lines.push(`累計 ${rs.length} 次進廠、共投入 NT$ ${spent.toLocaleString()}。`);
+    }
+
+    return lines.join('<br>');
+  }
+
 
   function showDetail(id) {
     const r = window.records.find(x => x.id === id);
